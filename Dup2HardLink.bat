@@ -20,6 +20,8 @@ setlocal
 
 call :parseArguments     %*
 call :workingDirectory   wd "%TEMP%\%~n0"
+:: A fast preliminary screening by file size. The word "common" only means same
+:: relative paths.
 call :findCommonFiles    "dir1.files.AbsPath.txt"^
                          "dir1.files.RelPath.txt"^
                          "dir1.CommonFiles.RelPath.txt"^
@@ -45,8 +47,8 @@ exit /b
   set "dir1=%~f1"
   set "dir2=%~f2"
 
-  :: dir1RE and dir2RE are regex form of dirX's, namely, in which all characters
-  :: having special meaning in sed's s command are escaped by a backslash.
+  :: dirXRE is the regex form of dirX's values, namely, in which all characters
+  :: having special meaning in sed's 's' command are escaped by a backslash.
   for /l %%I in (1,1,2) do (
     for /f "delims=" %%J in ('
       call echo "%%dir%%I%%"^| sed -r "s/\]|[[$&()+{}\.?]/\\&/g; s/\x22//g"
@@ -170,10 +172,10 @@ exit /b
   :: don't need delayed expansion at all.
   :: By th way, '!' also need '^'-escaping under delayed expansion.
 
-  :: Prepare inline awkscript
+  :: Prepare an inline awkscript
   set args=h(15), h(13), h(16)
   set pl=s1, s2, s3
-  set script=^
+  set awkscript=^
   BEGIN {^
     pt(%args%);^
     pc(             nul, "Total files ", "Total size ");^
@@ -193,8 +195,8 @@ exit /b
   func pb(%pl%) { printf("\t©¸%%-15s©Ø%%13s©Ø%%16s©¼\n", %pl%) }^
   func h(n, s) { for (i = 0; i ^< n; ++i) s = s"©¤"; return s }
 
-  set "script=%script:"=\"%"
-  gawk "%script%"
+  set "awkscript=%awkscript:"=\"%"
+  gawk "%awkscript%"
 
   goto :eof
 }
