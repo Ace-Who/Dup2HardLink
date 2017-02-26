@@ -26,17 +26,19 @@ call :findCommonFiles    "dir1.files.AbsPath.txt"^
                          "dir1.files.RelPath.txt"^
                          "dir1.CommonFiles.RelPath.txt"^
                          "SameSizeFiles.RelPath.txt"^
-                         numCF numSSF
+                         numComFiles numSameSizeFiles
 set hashtool=sha1sum
 call :hashCheck          "SameSizeFiles.RelPath.txt"^
                          "dir1.SameSizeFiles.%hashtool%.RelPath.txt"^
                          "%hashtool%Check.RelPath.txt"
-call :countFiles         "%dir1%" numD1F sizeD1F
-call :countFiles         "%dir2%" numD2F sizeD2F
+call :countFiles         "%dir1%" numDir1 sizeDir1
+call :countFiles         "%dir2%" numDir2 sizeDir2
 call :sumFileSizes       "%hashtool%Check.RelPath.txt"^
                          "dupFilesWithSizes.txt"^
-                         numDup sizeDup
+                         numDupFiles sizeDupFiles
 call :reportStatistics
+
+:: call :replaceFiles       "dupFilesWithSizes.txt"^
 
 endlocal
 exit /b
@@ -118,7 +120,7 @@ exit /b
   echo [%TIME%] Checking checksums against files in the 2nd directory
   (
     pushd "%dir2%"
-    if %numSSF% gtr 0 %hashtool% --check "%wd%\%~2"
+    if %numSameSizeFiles% gtr 0 %hashtool% --check "%wd%\%~2"
     popd
   ) > "%~3"
 
@@ -173,27 +175,27 @@ exit /b
   :: By th way, '!' also need '^'-escaping under delayed expansion.
 
   :: Prepare an inline awkscript
-  set args=h(15), h(13), h(16)
-  set pl=s1, s2, s3
+  set bars=bar(15), bar(13), bar(16)
+  set params=s1, s2, s3
   set awkscript=^
   BEGIN {^
-    pt(%args%);^
-    pc(             nul, "Total files ", "Total size ");^
-    px(%args%);^
-    pc(  " Directory 1",    %numD1F%" ",  "%sizeD1F% ");^
-    pc(  " Directory 2",    %numD2F%" ",  "%sizeD2F% ");^
-    px(%args%);^
-    pc( " Common files",     %numCF%" ",           nul);^
-    pc(   " Same sized",    %numSSF%" ",           nul);^
-    pc(" Hash matching",    %numDup%" ",  "%sizeDup% ");^
-    pb(%args%);^
+    pt(%bars%);^
+    pc(             nul,        "Total files ",     "Total size ");^
+    px(%bars%);^
+    pc(  " Directory 1",          %numDir1%" ",     "%sizeDir1% ");^
+    pc(  " Directory 2",          %numDir2%" ",     "%sizeDir2% ");^
+    px(%bars%);^
+    pc( " Common files",      %numComFiles%" ",               nul);^
+    pc(   " Same sized", %numSameSizeFiles%" ",               nul);^
+    pc(" Hash matching",      %numDupFiles%" ", "%sizeDupFiles% ");^
+    pb(%bars%);^
   }^
   ^
-  func pt(%pl%) { printf("\t©°%%-15s©Ð%%13s©Ð%%16s©´\n", %pl%) }^
-  func px(%pl%) { printf("\t©À%%-15s©à%%13s©à%%16s©È\n", %pl%) }^
-  func pc(%pl%) { printf("\t©¦%%-15s©¦%%13s©¦%%16s©¦\n", %pl%) }^
-  func pb(%pl%) { printf("\t©¸%%-15s©Ø%%13s©Ø%%16s©¼\n", %pl%) }^
-  func h(n, s) { for (i = 0; i ^< n; ++i) s = s"©¤"; return s }
+  func pt(%params%) { printf("\t©°%%-15s©Ð%%13s©Ð%%16s©´\n", %params%) }^
+  func px(%params%) { printf("\t©À%%-15s©à%%13s©à%%16s©È\n", %params%) }^
+  func pc(%params%) { printf("\t©¦%%-15s©¦%%13s©¦%%16s©¦\n", %params%) }^
+  func pb(%params%) { printf("\t©¸%%-15s©Ø%%13s©Ø%%16s©¼\n", %params%) }^
+  func bar(n, s) { for (i = 0; i ^< n; ++i) s = s"©¤"; return s }
 
   set "awkscript=%awkscript:"=\"%"
   gawk "%awkscript%"
