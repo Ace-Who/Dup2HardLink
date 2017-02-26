@@ -175,10 +175,11 @@ exit /b
   :: By th way, '!' also need '^'-escaping under delayed expansion.
 
   :: Prepare an inline awkscript
-  set bars=bar(15), bar(13), bar(16)
+  set bars=bar(w1), bar(w2), bar(w3)
   set params=s1, s2, s3
   set awkscript=^
   BEGIN {^
+    w1 = 15; w2 = 13; w3 = 16;^
     pt(%bars%);^
     pc(             nul,        "Total files ",     "Total size ");^
     px(%bars%);^
@@ -191,10 +192,10 @@ exit /b
     pb(%bars%);^
   }^
   ^
-  func pt(%params%) { printf("\t©°%%-15s©Ð%%13s©Ð%%16s©´\n", %params%) }^
-  func px(%params%) { printf("\t©À%%-15s©à%%13s©à%%16s©È\n", %params%) }^
-  func pc(%params%) { printf("\t©¦%%-15s©¦%%13s©¦%%16s©¦\n", %params%) }^
-  func pb(%params%) { printf("\t©¸%%-15s©Ø%%13s©Ø%%16s©¼\n", %params%) }^
+  func pt(%params%) { printf("\t©°%%-"w1"s©Ð%%"w2"s©Ð%%"w3"s©´\n", %params%) }^
+  func px(%params%) { printf("\t©À%%-"w1"s©à%%"w2"s©à%%"w3"s©È\n", %params%) }^
+  func pc(%params%) { printf("\t©¦%%-"w1"s©¦%%"w2"s©¦%%"w3"s©¦\n", %params%) }^
+  func pb(%params%) { printf("\t©¸%%-"w1"s©Ø%%"w2"s©Ø%%"w3"s©¼\n", %params%) }^
   func bar(n, s) { for (i = 0; i ^< n; ++i) s = s"©¤"; return s }
 
   set "awkscript=%awkscript:"=\"%"
