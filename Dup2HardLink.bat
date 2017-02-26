@@ -175,6 +175,8 @@ exit /b
   :: By th way, '!' also need '^'-escaping under delayed expansion.
 
   :: Prepare an inline awkscript
+  :: Reference: (about dynamic width modifier in gawk printf statement)
+  ::    https://www.gnu.org/software/gawk/manual/html_node/Format-Modifiers.html#Format-Modifiers
   set bars=bar(w1), bar(w2), bar(w3)
   set params=s1, s2, s3
   set awkscript=^
