@@ -4,7 +4,9 @@
 
 Compare two directories, find the duplicate files with same relative path and
 same hash checksum, and for each pair of them, replace one with a hard link
-pointing to the same inode the other points to.
+targeting to the other so that they sharing the same inode.
+
+The main purpose is to save hard-disk space.
 
 ## Warning
 
