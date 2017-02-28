@@ -110,10 +110,26 @@ exit /b
 
   :: This block takes much time because of repetitive calls of XXXsum which is
   :: hard to avoid because XXXsum doesn't support recursive hash creations.
+  ::
+  :: Now I use sed to feed sha1sum a bunch of files each time, like what xargs
+  :: does but in a much more primitive way. Why I don't use xargs is that after
+  :: testing I found xargs doesn't work properly in batch file or cmd.
+  ::
+  :: Also, if there are too many "$!N;" command such as %sed200Ns%, the length
+  :: of the command line will exceed the operating system's limits. So, use
+  :: this method abstinently and %sed10Ns% is already much faster than one file
+  :: per run. This is just a provisonal measure for speed testing. Maybe
+  :: someday I'll make a better emulation of xargs.
   echo [%TIME%] Creating hash checksums for files in the 1st directory
+  set sed10Ns=$!N;$!N;$!N;$!N;$!N;$!N;$!N;$!N;$!N;$!N
+  set sed50Ns=%sed10Ns%;%sed10Ns%;%sed10Ns%;%sed10Ns%;%sed10Ns%
+  set sed100Ns=%sed50Ns%;%sed50Ns%
+  set sed200Ns=%sed50Ns%;%sed50Ns%;%sed50Ns%;%sed50Ns%
   (
     pushd "%dir1%"
-    for /f "delims=|" %%F in ('type "%wd%\%~1"') do (%hashtool% "%%~F")
+    for /f "delims=" %%F in ('
+      sed "s/|.*//" "%wd%\%~1" ^| sed "%sed50Ns%;s/\n/ /g"
+    ') do (sha1sum %%F)
     popd
   ) > "%~2"
 
