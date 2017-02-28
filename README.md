@@ -10,7 +10,11 @@ The main purpose is to save hard-disk space.
 
 ## Warning
 
-If you don't know what is hard-link, do not use this script, at least the file deletion and hard-link creation part of its features. It's safe to only use the analysis feature.
+If you don't know what is a hard link, do not use this script, at least the file
+deletion and hard-link creation part of its features. It's safe to only use the
+analysis feature. To learn about hard links, you can refer to [this
+document](http://www.linfo.org/hard_link.html) and
+[Wikipedia](https://en.wikipedia.org/wiki/Hard_link).
 
 If you know what this script does, data backup is still recommended.
 

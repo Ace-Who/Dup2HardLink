@@ -7,7 +7,7 @@
 ::      sha256sum.
 ::
 :: 用途：将两个目录下的重复文件替换为硬链接。所谓「重复」，是指位置、文件名、
-:: md5 校验值都相同。
+:: hash 校验值都相同。
 ::
 :: 目前完成度 50%，能够统计出两个文件夹的文件重复情况。
 :: Todo: 排除目录软链接恰好指向对应目录的情况，这会导致删除一者的重复子文件其实
@@ -20,8 +20,8 @@ setlocal
 
 call :parseArguments     %*
 call :workingDirectory   wd "%TEMP%\%~n0"
-:: A fast preliminary screening by file size. The word "common" only means same
-:: relative paths.
+:: A fast preliminary screening by file size. The word "common" only means
+:: having a same relative path from respective directory.
 call :findCommonFiles    "dir1.files.AbsPath.txt"^
                          "dir1.files.RelPath.txt"^
                          "dir1.CommonFiles.RelPath.txt"^
@@ -49,7 +49,7 @@ exit /b
   set "dir1=%~f1"
   set "dir2=%~f2"
 
-  :: dirXRE is the regex form of dirX's values, namely, in which all characters
+  :: dirXRE is the regex form of dirX's values, that is, in which all characters
   :: having special meaning in sed's 's' command are escaped by a backslash.
   for /l %%I in (1,1,2) do (
     for /f "delims=" %%J in ('
