@@ -18,6 +18,14 @@
 setlocal
 
 call :parseArguments     %*
+if not exist "%dir1%\" echo Path not found.& exit /b
+if not exist "%dir2%\" echo Path not found.& exit /b
+call :detectSymlink      hasSymlink
+if [%hasSymlink%] == [true] (
+  echo [%TIME%] Found symbolic links above. Analysis is unreliable and the data security cannot be guaranteed.
+  exit /b
+)
+echo [%TIME%] No symbolic link is found. Task is safe.
 call :workingDirectory   wd "%TEMP%\%~n0"
 :: A fast preliminary screening by file size. The word "common" only means
 :: having a same relative path from respective directory.
@@ -56,6 +64,16 @@ exit /b
       set "dir%%IRE=%%J"
     )
   )
+
+  goto :eof
+}
+
+:detectSymlink {
+
+  echo [%TIME%] Detecting symbolic links:
+  set hasSymlink=false
+  dir /a:l /s /b "%dir1%" 2>nul && set hasSymlink=true
+  dir /a:l /s /b "%dir2%" 2>nul && set hasSymlink=true
 
   goto :eof
 }
