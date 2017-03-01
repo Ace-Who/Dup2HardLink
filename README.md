@@ -24,8 +24,8 @@ If you know what this script does, data backup is still recommended.
 
 - `gawk`. Used to report the statistics of comparison result.
 
-- `sha1sum`. Can be easily replaced with other hash tools such as md5sum and
-sha256sum, by modifying one command in the script.
+- `sha1sum`. Can be easily replaced with another hash tool such as `md5sum` and
+`sha256sum`, by modifying one command in the script.
 
 ## Example
 
