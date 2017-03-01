@@ -24,19 +24,19 @@ call :workingDirectory   wd "%TEMP%\%~n0"
 call :findCommonFiles    "dir1.files.AbsPath.txt"^
                          "dir1.files.RelPath.txt"^
                          "dir1.CommonFiles.RelPath.txt"^
-                         "SameSizeFiles.RelPath.txt"^
+                         "SameSizeFiles+size.RelPath.txt"^
                          numComFiles numSameSizeFiles
 set hashtool=sha1sum
-call :hashCheck          "SameSizeFiles.RelPath.txt"^
-                         "dir1.SameSizeFiles.%hashtool%.RelPath.txt"^
+call :hashCheck          "SameSizeFiles+size.RelPath.txt"^
+                         "%hashtool%Gen.dir1.RelPath.txt"^
                          "%hashtool%Check.RelPath.txt"
 call :countFiles         "%dir1%" numDir1 sizeDir1
 call :countFiles         "%dir2%" numDir2 sizeDir2
 call :sumFileSizes       "%hashtool%Check.RelPath.txt"^
-                         "dupFilesWithSizes.txt"^
+                         "dupFiles+sizes.txt"^
                          numDupFiles sizeDupFiles
 call :reportStatistics
-call :replaceFiles       "dupFilesWithSizes.txt"
+call :replaceFiles       "dupFiles+sizes.txt"
 
 endlocal
 exit /b
