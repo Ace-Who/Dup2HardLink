@@ -9,7 +9,6 @@
 :: 用途：将两个目录下的重复文件替换为硬链接。所谓「重复」，是指位置、文件名、
 :: hash 校验值都相同。
 ::
-:: 目前完成度 50%，能够统计出两个文件夹的文件重复情况。
 :: Todo: 排除目录软链接恰好指向对应目录的情况，这会导致删除一者的重复子文件其实
 ::    是删除了该文件的唯一副本。
 :: Todo: XXXsums 系列校验程序不支持目录递归，可以考虑换用 XXXdeep 系列程序，
@@ -37,8 +36,7 @@ call :sumFileSizes       "%hashtool%Check.RelPath.txt"^
                          "dupFilesWithSizes.txt"^
                          numDupFiles sizeDupFiles
 call :reportStatistics
-
-:: call :replaceFiles       "dupFilesWithSizes.txt"^
+call :replaceFiles       "dupFilesWithSizes.txt"
 
 endlocal
 exit /b
@@ -115,11 +113,11 @@ exit /b
   :: does but in a much more primitive way. Why I don't use xargs is that after
   :: testing I found xargs doesn't work properly in batch file or cmd.
   ::
-  :: Also, if there are too many "$!N;" command such as %sed200Ns%, the length
-  :: of the command line will exceed the operating system's limits. So, use
-  :: this method abstinently and %sed10Ns% is already much faster than one file
-  :: per run. This is just a provisonal measure for speed testing. Maybe
-  :: someday I'll make a better emulation of xargs.
+  :: Also notice, if there are too many "$!N;" commands such as %sed200Ns%, the
+  :: length of the command line will exceed the operating system's limit. So,
+  :: use this method abstemiously and %sed10Ns% is already much faster than one
+  :: file per run. This is just a provisonal measure for speed testing. Maybe
+  :: someday I'll make a better emulation of xargs (Todo).
   echo [%TIME%] Creating hash checksums for files in the 1st directory
   set sed10Ns=$!N;$!N;$!N;$!N;$!N;$!N;$!N;$!N;$!N;$!N
   set sed50Ns=%sed10Ns%;%sed10Ns%;%sed10Ns%;%sed10Ns%;%sed10Ns%
@@ -222,3 +220,21 @@ exit /b
   goto :eof
 }
 
+:replaceFiles {
+
+  choice /m "Replace the duplicate files with hard links?" /c yn
+  if errorlevel 2 goto :eof
+  choice /m "File changes will happen in %dir2%, are you sure?" /c yn
+  if errorlevel 2 goto :eof
+
+  for /f "delims=|" %%F in ('type "%wd%\%~1"') do (
+    del /p "%dir2%\%%~F"
+    mklink /h "%dir2%\%%~F" "%dir1%\%%~F"
+    if errorlevel 1 (
+      choice /m "Continue?" /c yn
+      if errorlevel 1 goto :eof
+    )
+  )
+
+  goto :eof
+}
