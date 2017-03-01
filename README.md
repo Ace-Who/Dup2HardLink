@@ -50,6 +50,6 @@ sha1sum: WARNING: 13 of 233 computed checksums did NOT match
         │ Same sized    │         233 │                │
         │ Hash matching │         220 │      5,733,289 │
         └───────────────┴─────────────┴────────────────┘
-    Replace the duplicate files with hard links? [Y,N]?Y
-    File changes will happen in folder2, are you sure? [Y,N]?N
+Replace the duplicate files with hard links? [Y,N]?Y
+File changes will happen in folder2, are you sure? [Y,N]?N
 ```
