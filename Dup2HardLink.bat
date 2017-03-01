@@ -23,7 +23,7 @@ if [%hasSymlink%] == [true] (
   echo [%TIME%] Found symbolic links above. Analysis is unreliable and the data security cannot be guaranteed.
   exit /b
 )
-echo [%TIME%] No symbolic link is found. Task is safe.
+echo   No symbolic link is found. Task is safe.
 call :workingDirectory   wd "%TEMP%\%~n0"
 :: A fast preliminary screening by file size. The word "common" only means
 :: having a same relative path from respective directory.

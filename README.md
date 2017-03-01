@@ -18,10 +18,21 @@ document](http://www.linfo.org/hard_link.html) and
 
 If you know what this script does, data backup is still recommended.
 
+## Dependencies
+
+- `sed`
+
+- `gawk`. Used to report the statistics of comparison result.
+
+- `sha1sum`. Can be easily replaced with other hash tools such as md5sum and
+sha256sum, by modifying one command in the script.
+
 ## Example
 
 ```console
 $ Dup2HardLink.bat folder1 folder2
+[20:18:28.15] Detecting symbolic links:
+  No symbolic link is found. Task is safe.
 [20:18:28.29] Listing the 1st directory
 [20:18:28.40] Selecting common files
 [20:18:28.52] Selecting same-size files
@@ -39,4 +50,6 @@ sha1sum: WARNING: 13 of 233 computed checksums did NOT match
         │ Same sized    │         233 │                │
         │ Hash matching │         220 │      5,733,289 │
         └───────────────┴─────────────┴────────────────┘
+    Replace the duplicate files with hard links? [Y,N]?Y
+    File changes will happen in folder2, are you sure? [Y,N]?N
 ```
